@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PlanPass AI | Console</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="app-body">
+
+    <nav class="glass-nav app-nav">
+        <div class="nav-content container">
+            <a href="index.html" class="logo-lockup" style="text-decoration:none; color:white;">
+                <div class="logo-symbol"><div class="bar"></div><div class="bar"></div></div>
+                <span class="logo-text">PlanPass_Console</span>
+            </a>
+            
+            <div class="nav-links-row">
+                <a href="index.html" class="nav-link">Platform</a>
+                <a href="pricing.html" class="nav-link">Pricing</a>
+                <a href="api.html" class="nav-link">API</a>
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+            </div>
+
+            <div class="nav-cta">
+                <span class="status-badge"><span class="pulse-dot"></span> Server Connected</span>
+                <a href="index.html" class="btn btn-secondary" style="margin-left: 20px;">Exit</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="app-wrapper">
+        <aside class="app-sidebar">
+            <div class="sidebar-section">
+                <div class="section-title">PROJECT EXPLORER</div>
+                <div class="file-tree">
+                    <div class="tree-item active" role="button" tabindex="0">📂 New_Upload</div>
+                    <div class="tree-item" role="button" tabindex="0">📂 History</div>
+                    <div class="tree-item" role="button" tabindex="0">⚙️ Settings</div>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="section-title">JURISDICTION</div>
+                <select class="geo-select" aria-label="Select Jurisdiction">
+                    <option>San Francisco (2024)</option>
+                    <option>Seattle (2021)</option>
+                    <option>Los Angeles (2023)</option>
+                </select>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-badge">Guest User</div>
+            </div>
+        </aside>
+
+        <main class="app-main">
+            <div id="uploadStage" class="stage active center-stage">
+                <div class="upload-zone" id="dropZone">
+                    <div class="icon-layer">cloud_upload</div>
+                    <h2>Upload Architectural Set</h2>
+                    <p>Drag & drop PDF, DWG, or RVT files</p>
+                    <input type="file" id="fileInput" hidden>
+                    <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">Browse Files</button>
+                    <div class="supported-formats">Supported: PDF, DWG, DXF</div>
+                </div>
+            </div>
+
+            <div id="processStage" class="stage center-stage">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                        <span class="term-title">planpass_engine_v2.1.exe</span>
+                    </div>
+                    <div class="terminal-body" id="consoleOutput"></div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="progressBar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="resultStage" class="stage full-stage">
+                <div class="results-layout">
+                    <div class="doc-viewer">
+                        <div class="viewer-header">
+                            <span id="fileNameDisplay">file.pdf</span>
+                            <span class="viewer-controls">-  100%  +</span>
+                        </div>
+                        <div class="viewer-canvas">
+                            <div class="bp-grid">
+                                <div class="bp-label" style="top: 50%; left: 50%;">Waiting for file...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-panel">
+                        <div class="score-header">
+                            <div class="score-circle">--</div>
+                            <div><h3>Processing...</h3><p>Analyzing Code Compliance</p></div>
+                        </div>
+                        <div class="issues-list"></div>
+                        <button class="btn btn-secondary full" onclick="location.reload()">New Scan</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>

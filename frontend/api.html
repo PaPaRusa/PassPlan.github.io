@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PlanPass AI | API Reference</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .doc-layout { display: grid; grid-template-columns: 250px 1fr; height: 100vh; }
+        .doc-sidebar { border-right: 1px solid var(--border); padding: 30px; background: #08080a; }
+        .doc-link { display: block; color: var(--text-muted); padding: 8px 0; font-size: 14px; text-decoration: none; }
+        .doc-link.active { color: var(--primary); font-weight: 600; }
+        .doc-link:hover { color: #fff; }
+        .doc-content { padding: 60px; overflow-y: auto; }
+        .endpoint-badge { background: #27c93f; color: #000; font-weight: 700; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-right: 10px; }
+        .param-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+        .param-table th { text-align: left; border-bottom: 1px solid var(--border); padding: 10px 0; color: #fff; }
+        .param-table td { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 10px 0; color: var(--text-muted); }
+    </style>
+</head>
+<body style="background: var(--bg); color: var(--text-main); font-family: var(--font-sans);">
+
+    <div class="doc-layout">
+        <!-- DOCS SIDEBAR -->
+        <aside class="doc-sidebar">
+            <a href="index.html" class="logo-lockup" style="margin-bottom: 40px; text-decoration: none; color: white;">
+                <span class="logo-text">PlanPass_API</span>
+            </a>
+            
+            <!-- Quick Links Back -->
+            <div style="margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px;">
+                <a href="index.html" class="doc-link">← Back to Platform</a>
+                <a href="dashboard.html" class="doc-link">← Back to Dashboard</a>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <div class="section-title">GETTING STARTED</div>
+                <a href="#" class="doc-link active">Introduction</a>
+                <a href="#" class="doc-link">Authentication</a>
+                <a href="#" class="doc-link">Rate Limits</a>
+            </div>
+            <div>
+                <div class="section-title">ENDPOINTS</div>
+                <a href="#" class="doc-link">POST /scan</a>
+                <a href="#" class="doc-link">GET /projects</a>
+                <a href="#" class="doc-link">GET /jurisdictions</a>
+            </div>
+        </aside>
+
+        <!-- DOCS CONTENT -->
+        <main class="doc-content">
+            <h1>API Reference</h1>
+            <p class="hero-sub" style="margin-bottom: 40px;">Integrate automated building code compliance directly into your CI/CD pipeline or internal tools.</p>
+
+            <section style="margin-bottom: 60px;">
+                <h2>Authentication</h2>
+                <p>Authenticate your requests using the <code>Authorization</code> header.</p>
+                <div class="code-block" style="margin-top: 20px;">
+                    <span class="keyword">Authorization</span>: Bearer &lt;YOUR_API_KEY&gt;
+                </div>
+            </section>
+
+            <section>
+                <h2>Scan Document</h2>
+                <p>Upload a PDF file for immediate analysis.</p>
+                
+                <div style="margin: 20px 0; display:flex; align-items:center;">
+                    <span class="endpoint-badge">POST</span>
+                    <code class="mono" style="font-size: 16px;">https://api.planpass.ai/v1/scan</code>
+                </div>
+
+                <h3>Parameters</h3>
+                <table class="param-table">
+                    <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td class="mono">file</td><td>Binary</td><td>The PDF document to analyze (Max 50MB).</td></tr>
+                        <tr><td class="mono">jurisdiction</td><td>String</td><td>(Optional) "San Francisco", "Seattle", etc.</td></tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin-top: 40px;">Example Request</h3>
+                <div class="code-block">
+<span class="keyword">import</span> requests
+
+url = <span class="string">"https://api.planpass.ai/v1/scan"</span>
+files = {<span class="string">"file"</span>: open(<span class="string">"adu_plan.pdf"</span>, <span class="string">"rb"</span>)}
+headers = {<span class="string">"Authorization"</span>: <span class="string">"Bearer sk_live_..."</span>}
+
+response = requests.post(url, files=files, headers=headers)
+print(response.json())
+                </div>
+            </section>
+        </main>
+    </div>
+
+</body>
+</html>

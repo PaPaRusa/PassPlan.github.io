@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO OPTIMIZATION -->
+    <title>PlanPass AI | Automated Building Permit Compliance</title>
+    <meta name="description" content="The leading AI platform for structural engineers and architects to automate building code compliance. Instant pre-checks for IBC, CRC, and 20,000+ local municipal amendments.">
+    <meta name="keywords" content="AI building permit, automated plan check, structural engineering software, architectural compliance">
+    <meta name="author" content="PlanPass AI">
+    <link rel="canonical" href="https://planpass.ai">
+
+    <!-- OPEN GRAPH -->
+    <meta property="og:title" content="PlanPass AI | Zero-Redline Permit Submissions">
+    <meta property="og:description" content="Stop guessing. PlanPass AI scans your blueprints against local codes in seconds.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://planpass.ai">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="background-grid"></div>
+    <div class="cursor-spotlight" id="cursorSpotlight"></div>
+
+    <!-- NAVIGATION -->
+    <nav class="glass-nav">
+        <div class="nav-content container">
+            <div class="logo-lockup">
+                <div class="logo-symbol">
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                </div>
+                <a href="index.html" style="text-decoration: none; color: white;">
+                    <span class="logo-text">PlanPass_AI</span>
+                </a>
+            </div>
+
+            <div class="nav-links-row">
+                <a href="index.html" class="nav-link active">Platform</a>
+                <a href="pricing.html" class="nav-link">Pricing</a>
+                <a href="api.html" class="nav-link">API</a>
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+            </div>
+
+            <div class="nav-cta">
+                <span class="status-badge"><span class="pulse-dot"></span> System Online</span>
+                <a href="demo.html" class="btn btn-primary" style="text-decoration:none;">Open Console</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section class="hero container">
+            <div class="hero-text reveal">
+                <!-- DIFFERENTIATION PILL FIXED -->
+                <div class="announcement-pill">
+                    <span class="pill-badge">Differentiation</span>
+                    <span>We measure geometry. Others guess text.</span>
+                </div>
+                
+                <h1>Code compliance, <br><span class="text-gradient">solved in seconds.</span></h1>
+                <p class="hero-sub">The only <strong>Geometry-RAG engine</strong> for structural engineers. Upload your PDF set and verify against 20,000+ local municipal amendments before the city sees it.</p>
+                
+                <div class="input-group">
+                    <input type="email" placeholder="work_email@firm.com" class="email-input">
+                    <a href="demo.html" class="btn btn-primary" style="text-decoration:none; padding:12px 20px;">Start Free Scan</a>
+                </div>
+                <div class="input-hint">
+                    <span>SOC-2 Encrypted</span>
+                    <span class="divider">•</span>
+                    <span>No Credit Card</span>
+                </div>
+            </div>
+
+            <!-- DASHBOARD PREVIEW -->
+            <div class="dashboard-stage reveal">
+                <div class="dashboard-frame">
+                    <!-- Browser Chrome -->
+                    <div class="window-chrome">
+                        <div class="window-controls">
+                            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                        </div>
+                        <div class="address-bar">
+                            <span class="lock-icon">🔒</span> planpass.ai/projects/SFO_ADU_v4
+                        </div>
+                        <div class="user-avatar">JS</div>
+                    </div>
+                    
+                    <!-- App UI -->
+                    <div class="app-layout-preview">
+                        <div class="preview-sidebar">
+                            <div class="nav-item active">Overview</div>
+                            <div class="nav-item">Zoning Analysis</div>
+                            <div class="nav-item">Structural Checks</div>
+                            <div class="nav-item alert">Egress (2 Issues)</div>
+                            <div class="nav-item">Energy / T24</div>
+                        </div>
+                        <div class="preview-main">
+                            <div class="scan-overlay"></div>
+                            <div class="blueprint-grid">
+                                <!-- Blueprint Lines -->
+                                <div class="bp-line horz" style="top: 30%"></div>
+                                <div class="bp-line horz" style="top: 70%"></div>
+                                <div class="bp-line vert" style="left: 40%"></div>
+                                <div class="bp-line vert" style="left: 80%"></div>
+                                <div class="bp-room" style="top: 30%; left: 0; width: 40%; height: 40%;">
+                                    <span>LIVING RM</span>
+                                    <small>14' x 12'</small>
+                                </div>
+                                <div class="bp-room" style="top: 30%; left: 40%; width: 40%; height: 40%;">
+                                    <span>BED 1</span>
+                                    <div class="error-marker" style="top: 10px; right: 10px;">!</div>
+                                </div>
+                            </div>
+                            <div class="floating-stat">
+                                <div class="stat-label">Pass Probability</div>
+                                <div class="stat-num">88.4%</div>
+                                <div class="stat-bar"><div class="stat-fill" style="width:88%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LOGOS -->
+        <section class="logos-section">
+            <p>TRUSTED BY ENGINEERING TEAMS AT</p>
+            <div class="logo-scroller">
+                <span>SOM</span><span>GENSLER</span><span>AECOM</span><span>HOK</span><span>PERKINS&WILL</span><span>ARUP</span>
+            </div>
+        </section>
+
+        <!-- COMPETITIVE MATRIX (Updated: No Emojis, Colors Added) -->
+        <section class="container section-pad reveal">
+            <div class="section-header centered">
+                <h2>Why generic AI isn't enough.</h2>
+                <p>Architectural compliance requires spatial awareness, not just text generation.</p>
+            </div>
+            
+            <div class="comparison-table-wrapper">
+                <table class="comp-table">
+                    <thead>
+                        <tr>
+                            <th class="feature-col" style="text-align: left;">Feature</th>
+                            <th>Traditional Review</th>
+                            <th>Generic LLMs</th>
+                            <th class="highlight-col">PlanPass AI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="feature-row">Analysis Speed</td>
+                            <td class="negative">4-6 Weeks</td>
+                            <td class="positive">Seconds</td>
+                            <td class="highlight-cell positive">Seconds</td>
+                        </tr>
+                        <tr>
+                            <td class="feature-row">Geometry Awareness</td>
+                            <td class="positive">Manual</td>
+                            <td class="negative">Text Only</td>
+                            <td class="highlight-cell positive"><strong>Native Parsing</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-row">Local Amendments</td>
+                            <td class="positive">Expert Dependent</td>
+                            <td class="negative">Hallucinates</td>
+                            <td class="highlight-cell positive"><strong>20,000+ Codes</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-row">Direct Citations</td>
+                            <td class="negative">Annotations Only</td>
+                            <td class="negative">No Sources</td>
+                            <td class="highlight-cell positive"><strong>Deep Links</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-row">Cost Per Project</td>
+                            <td class="negative">$2,500+</td>
+                            <td class="positive">$20</td>
+                            <td class="highlight-cell positive"><strong>$50 (Flat Rate)</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SERVICES BENTO GRID -->
+        <section id="services" class="container section-pad reveal">
+            <div class="section-header">
+                <h2>Comprehensive Coverage</h2>
+                <p>One platform for every aspect of building compliance.</p>
+            </div>
+            
+            <div class="bento-grid">
+                <div class="bento-card large spotlight">
+                    <div class="card-content">
+                        <h3>Jurisdiction-Aware Zoning</h3>
+                        <p>We automate the tedious check of local zoning ordinances. Setbacks, Floor Area Ratio (FAR), lot coverage, and height limits are cross-referenced against your specific parcel APN.</p>
+                        <ul class="features-list">
+                            <li>Local Amendment Database (450+ Cities)</li>
+                            <li>Automated Setback Detection</li>
+                            <li>Historical Ordinance Tracking</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="bento-card spotlight">
+                    <div class="icon-box">🔥</div>
+                    <h3>Life Safety & Fire</h3>
+                    <p>Automated egress path calculation, occupancy load limits, and fire-rating verification.</p>
+                </div>
+                <div class="bento-card spotlight">
+                    <div class="icon-box">♿</div>
+                    <h3>ADA & Accessibility</h3>
+                    <p>Verify turning radiuses, door clearances, and ramp slopes against ADA Standards.</p>
+                </div>
+                <div class="bento-card spotlight">
+                    <div class="icon-box">⚡</div>
+                    <h3>MEP & Energy</h3>
+                    <p>Check Title 24 energy requirements and electrical outlet spacing (NEC).</p>
+                </div>
+                <div class="bento-card large spotlight">
+                    <div class="card-content">
+                        <h3>Structural Prescriptive</h3>
+                        <p>For residential projects, we verify span tables against wood framing standards (NDS). Ensure your headers, joists, and rafters meet prescriptive code requirements.</p>
+                        <div class="code-block">
+                            <span class="keyword">Verify</span>: 2x10 Joist @ 16" O.C.<br>
+                            <span class="string">Result</span>: PASS (Max Span 16'2")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDER SECTION -->
+        <section class="container section-pad reveal">
+            <div class="section-header centered">
+                <h2>Visual Proof</h2>
+                <p>See the difference between manual redlines and AI precision.</p>
+            </div>
+            <div class="slider-wrapper" id="comparisonSlider">
+                <div class="slide-before">
+                    <div class="slide-content traditional">
+                        <h3>Manual Redlines</h3>
+                        <ul>
+                            <li>❌ Missed setback issue</li>
+                            <li>❌ 2 weeks turnaround</li>
+                            <li>❌ Subjective opinions</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="slide-after">
+                    <div class="slide-content ai-powered">
+                        <h3>PlanPass AI</h3>
+                        <ul>
+                            <li>✅ 100% Code Coverage</li>
+                            <li>✅ 5 Minute Scan</li>
+                            <li>✅ Citation Links</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="handle">
+                    <div class="handle-line"></div>
+                    <div class="handle-circle"><></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="container section-pad reveal" id="faq">
+    <div class="faq-layout">
+        <div class="faq-header">
+            <h2>Common Questions</h2>
+            <p>Everything you need to know about how PlanPass AI works, what it supports, and how the pilot operates.</p>
+        </div>
+
+        <div class="faq-list">
+
+            <details class="faq-item">
+                <summary>Does PlanPass AI guarantee permit approval?</summary>
+                <p>No. PlanPass provides a pre-compliance analysis and probability estimate based on your plans and jurisdiction. Final approval is always made by the authority having jurisdiction (AHJ).</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>What project types are supported?</summary>
+                <p>We are focusing first on ADUs, additions, garage conversions, tenant improvements and small multifamily residential projects. Commercial and larger buildings will be added as the system expands.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>Which codes and standards does PlanPass check?</summary>
+                <p>IBC 2021/2024, CRC (California Residential Code), basic structural spans, egress & life-safety, accessibility triggers, zoning standards, and local amendments for major US cities. Additional code sets roll out monthly.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>What kind of issues can PlanPass AI flag?</summary>
+                <p>Common code conflicts such as inadequate egress windows, setback violations, stair geometry issues, life-safety deficiencies, zoning conflicts, prescriptive span limits, and frequently redlined ADU requirements.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>Will cities see my reports?</summary>
+                <p>No — during the pilot, reports are private to your firm. Future city integrations will be opt-in and designed collaboratively with participating firms.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>How accurate is the pass-probability score?</summary>
+                <p>It's an estimate based on code logic, known patterns, and similar project outcomes. It is meant to guide your expectations, not guarantee approval. Accuracy improves as more data flows through the system.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>How much does it cost?</summary>
+                <p>During the beta, access is free for selected firms in exchange for structured feedback and early workflow data. Pricing will be announced closer to general availability.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>Is my data secure?</summary>
+                <p>Yes. Plans are stored securely, never shared with any jurisdiction, and can be deleted at any time. A detailed data privacy policy will be published before public launch.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>How do we join the pilot?</summary>
+                <p>Apply using the form on this page. We’ll schedule a short call to understand your workflow and confirm fit. Selected firms gain early access, roadmap influence, and priority onboarding.</p>
+            </details>
+
+        </div>
+    </div>
+</section>
+
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="col">
+                <span class="logo-text">PlanPass_AI</span>
+                <p>San Francisco, CA</p>
+                <small style="color:var(--text-muted);">© 2025 PlanPass AI. All rights reserved.</small>
+            </div>
+            <div class="col">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Twitter</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanPass AI | Access</title>
+    <link rel="stylesheet" href="signup.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- React Dependencies -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="app-body">
+
+    <div class="background-grid"></div>
+    <div class="cursor-spotlight" id="cursorSpotlight"></div>
+
+    <nav class="glass-nav">
+        <div class="nav-content container">
+            <a href="index.html" class="logo-lockup">
+                <div class="logo-symbol"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+                <span class="logo-text">PlanPass_AI</span>
+            </a>
+            
+            <!-- Restored Navigation Links -->
+            <div class="nav-links-row">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="index.html#features" class="nav-link">Features</a>
+                <a href="index.html#method" class="nav-link">Method</a>
+                <a href="index.html#customers" class="nav-link">Customers</a>
+                <a href="index.html#pricing" class="nav-link">Pricing</a>
+            </div>
+
+            <div class="nav-menu">
+                <a href="index.html" class="btn btn-secondary btn-mini">Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container section-pad" style="display:flex; align-items:center; justify-content:center; min-height:90vh; padding-top: 100px;">
+        <div id="auth-root" class="full-width" style="display: flex; justify-content: center;"></div>
+    </main>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function AuthPage() {
+            // Sign Up State
+            const [signUpData, setSignUpData] = useState({
+                firstName: '',
+                lastName: '',
+                email: '',
+                role: '',
+                customRole: '',
+                orgType: '',
+                otherOrgType: '',
+                solutions: []
+            });
+
+            const handleSolutionChange = (solution) => {
+                setSignUpData(prev => {
+                    const isSelected = prev.solutions.includes(solution);
+                    if (isSelected) {
+                        return { ...prev, solutions: prev.solutions.filter(s => s !== solution) };
+                    } else {
+                        return { ...prev, solutions: [...prev.solutions, solution] };
+                    }
+                });
+            };
+
+            const handleSignUpSubmit = (e) => {
+                e.preventDefault();
+                console.log('Sign Up:', signUpData);
+                // Redirect on sign up as well
+                window.location.href = 'index.html';
+            };
+
+            const handleSignInSubmit = (e) => {
+                e.preventDefault();
+                console.log('Sign In Submitted');
+                // Redirect to homepage/dashboard
+                window.location.href = 'index.html';
+            };
+
+            return (
+                <div className="split-card">
+                    
+                    {/* --- LEFT SIDE: SIGN IN --- */}
+                    <div className="auth-col signin">
+                        <div className="auth-form-wrapper">
+                            <div className="auth-header">
+                                <h2 className="auth-title">Welcome Back</h2>
+                                <p className="auth-desc">Log in to access your dashboard.</p>
+                            </div>
+
+                            <form onSubmit={handleSignInSubmit} className="form-stack">
+                                <div>
+                                    <label className="form-label">EMAIL ADDRESS</label>
+                                    <input type="email" className="email-input full-width" placeholder="jane@firm.com" />
+                                </div>
+                                <div>
+                                    <label className="form-label">PASSWORD</label>
+                                    <input type="password" className="email-input full-width" placeholder="••••••••" />
+                                </div>
+                                <button type="submit" className="btn btn-primary full-width">Log In</button>
+                            </form>
+
+                            <div className="auth-footer-link">
+                                <a href="#">Forgot Password?</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* --- RIGHT SIDE: SIGN UP --- */}
+                    <div className="auth-col signup">
+                        <div className="auth-form-wrapper" style={{maxWidth: '500px'}}>
+                            <div className="auth-header">
+                                <h2 className="auth-title">Join Private Beta</h2>
+                                <p className="auth-desc">Create an account to manage your projects.</p>
+                            </div>
+
+                            <form onSubmit={handleSignUpSubmit} className="form-stack">
+                                
+                                <div className="form-row">
+                                    <div>
+                                        <label className="form-label">FIRST NAME</label>
+                                        <input 
+                                            type="text" 
+                                            className="email-input full-width" 
+                                            value={signUpData.firstName}
+                                            onChange={e => setSignUpData({...signUpData, firstName: e.target.value})}
+                                            
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="form-label">LAST NAME</label>
+                                        <input 
+                                            type="text" 
+                                            className="email-input full-width" 
+                                            value={signUpData.lastName}
+                                            onChange={e => setSignUpData({...signUpData, lastName: e.target.value})}
+                                            
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="form-label">WORK EMAIL</label>
+                                    <input 
+                                        type="email" 
+                                        className="email-input full-width" 
+                                        value={signUpData.email}
+                                        onChange={e => setSignUpData({...signUpData, email: e.target.value})}
+                                        
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="form-label">ROLE</label>
+                                    <select 
+                                        className="email-input full-width select-arrow" 
+                                        value={signUpData.role}
+                                        onChange={e => setSignUpData({...signUpData, role: e.target.value})}
+                                        
+                                    >
+                                        <option value="" disabled>Select your role...</option>
+                                        <option value="architect">Architect</option>
+                                        <option value="engineer">Engineer</option>
+                                        <option value="project_manager">Project Manager</option>
+                                        <option value="client">Client / Owner</option>
+                                        <option value="custom">Custom (Specify below)</option>
+                                    </select>
+                                    
+                                    {signUpData.role === 'custom' && (
+                                        <div className="fade-in">
+                                            <input 
+                                                type="text" 
+                                                className="email-input full-width"
+                                                placeholder="Please specify your role"
+                                                value={signUpData.customRole}
+                                                onChange={e => setSignUpData({...signUpData, customRole: e.target.value})}
+                                                
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="form-label">ORGANIZATION TYPE</label>
+                                    <select 
+                                        className="email-input full-width select-arrow"
+                                        value={signUpData.orgType}
+                                        onChange={e => setSignUpData({...signUpData, orgType: e.target.value})}
+                                        
+                                    >
+                                        <option value="" disabled>Select organization type...</option>
+                                        <option value="architecture_firm">Architecture Firm</option>
+                                        <option value="construction">Construction Company</option>
+                                        <option value="developer">Real Estate Developer</option>
+                                        <option value="government">Government / Public Sector</option>
+                                        <option value="other">Other</option>
+                                    </select>
+
+                                    {signUpData.orgType === 'other' && (
+                                        <div className="fade-in">
+                                            <input 
+                                                type="text" 
+                                                className="email-input full-width"
+                                                placeholder="Please specify organization type"
+                                                value={signUpData.otherOrgType}
+                                                onChange={e => setSignUpData({...signUpData, otherOrgType: e.target.value})}
+                                                
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="form-label" style={{marginBottom: '12px'}}>SOLUTIONS OF INTEREST</label>
+                                    <div className="solution-grid">
+                                        {['Project Management', 'Design Automation', 'Compliance Check', 'Resource Planning', 'Client Portal', 'BIM Integration'].map(sol => (
+                                            <div 
+                                                key={sol}
+                                                className={`solution-card ${signUpData.solutions.includes(sol) ? 'selected' : ''}`}
+                                                onClick={() => handleSolutionChange(sol)}
+                                            >
+                                                <span>{sol}</span>
+                                                {signUpData.solutions.includes(sol) && <span className="solution-check">✓</span>}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <button type="submit" className="btn btn-primary full-width" style={{marginTop: '10px'}}>Create Account</button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('auth-root'));
+        root.render(<AuthPage />);
+    </script>
+    <script>
+        // Simple cursor spotlight script
+        document.addEventListener('mousemove', (e) => {
+            const spotlight = document.getElementById('cursorSpotlight');
+            if (spotlight) {
+                spotlight.style.left = e.clientX + 'px';
+                spotlight.style.top = e.clientY + 'px';
+            }
+        });
+    </script>
+</body>
+</html>

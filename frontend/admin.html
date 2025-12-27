@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PlanPass AI | Admin Console</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+
+    <div class="admin-layout">
+        <aside class="sidebar-panel">
+            <div class="logo-lockup" style="margin-bottom: 40px;">
+                <span class="logo-text">ADMIN_V1</span>
+            </div>
+            <div class="menu-group">
+                <div class="menu-label">Main</div>
+                <div class="menu-item active">Dashboard</div>
+                <div class="menu-item">Users</div>
+                <div class="menu-item">Audit Logs</div>
+            </div>
+            <div class="menu-group">
+                <div class="menu-label">Engineering</div>
+                <div class="menu-item">Rule Sets</div>
+                <div class="menu-item">API Keys</div>
+            </div>
+            <div class="user-profile">
+                <div class="avatar">JS</div>
+                <div class="user-info">
+                    <div class="name">John Smith</div>
+                    <div class="role">Super Admin</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="admin-content">
+            <header class="admin-header">
+                <h2>System Overview</h2>
+                <div class="live-indicator"><span class="pulse-dot"></span> Live Stream</div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="label">Active Scans</div>
+                    <div class="value">142</div>
+                    <div class="delta positive">↑ 12% vs last hr</div>
+                </div>
+                <div class="stat-box">
+                    <div class="label">Revenue (MRR)</div>
+                    <div class="value">$24,500</div>
+                    <div class="delta positive">↑ 4% this month</div>
+                </div>
+                <div class="stat-box">
+                    <div class="label">Server Load</div>
+                    <div class="value">34%</div>
+                    <div class="delta neutral">Stable</div>
+                </div>
+            </div>
+
+            <div class="data-panel">
+                <div class="panel-header">
+                    <h3>Recent Scan Jobs</h3>
+                    <button class="btn btn-secondary small">Export CSV</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Job ID</th>
+                            <th>User</th>
+                            <th>Jurisdiction</th>
+                            <th>Status</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="mono">#8823</td>
+                            <td>design_co_sf</td>
+                            <td>San Francisco, CA</td>
+                            <td><span class="status-chip success">Complete</span></td>
+                            <td class="mono">92%</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">#8822</td>
+                            <td>build_inc_wa</td>
+                            <td>Seattle, WA</td>
+                            <td><span class="status-chip processing">Processing</span></td>
+                            <td class="mono">--</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">#8821</td>
+                            <td>arch_studio_la</td>
+                            <td>Los Angeles, CA</td>
+                            <td><span class="status-chip error">Failed</span></td>
+                            <td class="mono">0%</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">#8820</td>
+                            <td>city_review_sj</td>
+                            <td>San Jose, CA</td>
+                            <td><span class="status-chip success">Complete</span></td>
+                            <td class="mono">88%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>

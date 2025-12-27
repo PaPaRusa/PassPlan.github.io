@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanPass AI | Enterprise Dashboard</title>
+    
+    <!-- DASHBOARD.CSS ONLY - High End Styling -->
+    <link rel="stylesheet" href="dashboard.css">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* --- VISUAL UPGRADES FOR SCANNER --- */
+        
+        /* Setup Form Styles */
+        .setup-card {
+            background: var(--dash-surface);
+            border: 1px solid var(--dash-border);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            animation: slideUp 0.4s ease-out;
+        }
+
+        .setup-group {
+            margin-bottom: 20px;
+        }
+        .setup-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--dash-text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .setup-input, .setup-select {
+            width: 100%;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--dash-border);
+            padding: 12px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .setup-input:focus, .setup-select:focus {
+            border-color: var(--dash-primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        /* 1. Animated Upload Zone */
+        .upload-zone-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            padding: 4px; /* Border width */
+            background: linear-gradient(135deg, rgba(99,102,241,0.5), rgba(16,185,129,0.5));
+            border-radius: 20px;
+            animation: gradientBorder 4s infinite linear;
+            background-size: 200% 200%;
+        }
+        @keyframes gradientBorder { 0% {background-position: 0% 50%} 50% {background-position: 100% 50%} 100% {background-position: 0% 50%} }
+
+        .upload-zone-inner {
+            background: #09090b;
+            border-radius: 16px;
+            padding: 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-particles {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* 2. PRO BLUEPRINT ENGINE */
+        .blueprint-container {
+            width: 100%;
+            height: 100%;
+            background: #1e293b;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            /* Technical Grid */
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+        }
+
+        .blueprint-doc {
+            width: 80%;
+            height: 85%;
+            position: relative;
+            background: transparent;
+            /* Blueprint Border */
+            outline: 2px dashed rgba(255,255,255,0.1);
+            outline-offset: 10px;
+        }
+
+        /* --- ARCHITECTURAL ELEMENTS --- */
+        .bp-wall {
+            position: absolute;
+            background: #fff;
+            box-shadow: 0 0 2px rgba(0,0,0,0.5);
+        }
+        .bp-door { position: absolute; pointer-events: none; }
+        .bp-door-leaf { position: absolute; background: #fff; transform-origin: top left; }
+        .bp-door-swing {
+            position: absolute;
+            border: 1px dashed rgba(255,255,255,0.5);
+            border-radius: 0 0 100% 0;
+            border-top: none; border-left: none;
+        }
+        .bp-window {
+            position: absolute;
+            background: #1e293b;
+            border-top: 1px solid #fff; border-bottom: 1px solid #fff;
+            z-index: 2;
+        }
+        .bp-window::after {
+            content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 1px;
+            background: rgba(255,255,255,0.3);
+        }
+        .bp-label {
+            position: absolute;
+            color: rgba(255,255,255,0.9);
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            text-align: center;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .bp-label span {
+            display: block; font-size: 8px; font-weight: 400;
+            color: rgba(255,255,255,0.6); margin-top: 2px;
+        }
+        .bp-dim {
+            position: absolute;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            height: 4px;
+            border-left: 1px solid rgba(255,255,255,0.3);
+            border-right: 1px solid rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.5);
+            font-size: 8px; font-family: monospace;
+            text-align: center; line-height: -5px;
+        }
+        .bp-dim span { background: #1e293b; padding: 0 4px; position: relative; top: -6px; }
+
+        /* Hotspots */
+        .hotspot {
+            position: absolute; width: 20px; height: 20px;
+            border-radius: 50%; cursor: pointer; z-index: 100;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: bold; color: #fff;
+            animation: pulseHotspot 2s infinite; transition: 0.2s;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        .hotspot:hover { transform: scale(1.2); z-index: 101; }
+        .hotspot.issue-high { background: rgba(244, 63, 94, 0.9); border: 2px solid #fff; }
+        .hotspot.issue-med { background: rgba(245, 158, 11, 0.9); border: 2px solid #fff; }
+
+        @keyframes pulseHotspot { 
+            0% { box-shadow: 0 0 0 0px rgba(244, 63, 94, 0.6); } 
+            100% { box-shadow: 0 0 0 15px rgba(244, 63, 94, 0); } 
+        }
+
+        .hotspot-tooltip {
+            position: absolute; bottom: 25px; left: 50%;
+            transform: translateX(-50%); background: #000;
+            border: 1px solid var(--dash-border); padding: 4px 8px;
+            border-radius: 4px; white-space: nowrap; font-size: 9px;
+            color: #fff; opacity: 0; pointer-events: none; transition: 0.2s;
+        }
+        .hotspot:hover .hotspot-tooltip { opacity: 1; bottom: 30px; }
+
+        /* 3. Loading Terminal Polish */
+        .terminal-window {
+            border: 1px solid var(--dash-border);
+            box-shadow: 0 0 60px rgba(99, 102, 241, 0.15);
+            background: #050505;
+        }
+        .scan-line {
+            width: 100%; height: 2px;
+            background: var(--dash-success);
+            box-shadow: 0 0 20px var(--dash-success);
+            position: absolute; top: 0;
+            animation: scanMove 2.5s infinite linear;
+            opacity: 0.5; pointer-events: none; z-index: 5;
+        }
+        @keyframes scanMove { 0% {top:0; opacity:0;} 10% {opacity:1} 90% {opacity:1} 100% {top:100%; opacity:0;} }
+        
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    </style>
+</head>
+<body>
+
+    <!-- AMBIENT LIGHTING EFFECTS -->
+    <div class="background-grid"></div>
+    <div style="position:fixed; top:-20%; right:-10%; width:800px; height:800px; background:radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%); pointer-events:none; z-index:0;"></div>
+    <div style="position:fixed; bottom:-20%; left:-10%; width:600px; height:600px; background:radial-gradient(circle, rgba(16,185,129,0.05) 0%, transparent 70%); pointer-events:none; z-index:0;"></div>
+    
+    <!-- CURSOR SPOTLIGHT -->
+    <div class="cursor-spotlight" id="cursorSpotlight"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="app-sidebar">
+        <div class="sidebar-header">
+            <div class="logo-symbol-small">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            </div>
+            <a href="index.html" style="text-decoration: none;">
+                <span class="brand-text" style="margin-left: 10px; font-size: 15px;">PlanPass_AI</span>
+            </a>
+        </div>
+
+        <div class="sidebar-section-title">Main</div>
+        <div class="nav-item active" onclick="switchView('dashboard')">
+            <i data-lucide="layout-dashboard"></i> <span>Overview</span>
+        </div>
+        <div class="nav-item" onclick="switchView('scanner')">
+            <i data-lucide="scan-line"></i> <span>Code Scanner</span>
+        </div>
+        <div class="nav-item" onclick="switchView('projects')">
+            <i data-lucide="folder-open"></i> <span>Projects</span>
+        </div>
+
+        <div class="sidebar-section-title">Intelligence</div>
+        <div class="nav-item" onclick="switchView('dashboard')">
+            <i data-lucide="ruler"></i> <span>Geometry Check</span>
+        </div>
+        <div class="nav-item" onclick="switchView('dashboard')">
+            <i data-lucide="zap"></i> <span>Energy / T24</span>
+        </div>
+        <div class="nav-item" onclick="switchView('dashboard')">
+            <i data-lucide="book-open"></i> <span>Code Library</span>
+        </div>
+
+        <div class="sidebar-section-title">System</div>
+        <div class="nav-item" onclick="switchView('settings')">
+            <i data-lucide="settings"></i> <span>Settings</span>
+        </div>
+        <div class="nav-item">
+            <i data-lucide="users"></i> <span>Team Access</span>
+        </div>
+
+        <div style="margin-top: auto; margin-bottom: 20px; padding: 16px; background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                <span style="font-size:11px; font-weight:700; color:var(--dash-primary);">ENTERPRISE PLAN</span>
+                <span style="font-size:10px; color:var(--dash-text-muted);">v2.4</span>
+            </div>
+            <div style="height:4px; background:rgba(255,255,255,0.1); border-radius:2px; overflow:hidden;">
+                <div style="width:75%; height:100%; background:var(--dash-primary);"></div>
+            </div>
+            <div style="margin-top:6px; font-size:10px; color:var(--dash-text-muted);">4,500 / 6,000 Credits Used</div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">JS</div>
+                <div class="user-info">
+                    <div class="user-name-display">Jane Smith</div>
+                    <div>Architect Lead</div>
+                </div>
+                <i data-lucide="log-out" style="width:16px; margin-left:auto; color:var(--dash-text-muted); cursor:pointer;" onclick="window.location.href='index.html'"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN APP AREA -->
+    <main class="app-main">
+        
+        <header class="top-bar">
+            <div class="breadcrumbs">
+                <span>Skidmore, Owings & Merrill</span>
+                <i data-lucide="chevron-right" style="width:14px; color:#444;"></i>
+                <span id="pageTitle" class="current">Dashboard Overview</span>
+            </div>
+            <div class="top-actions" style="display:flex; gap:16px; align-items:center;">
+                <div style="position:relative; cursor:pointer;">
+                    <i data-lucide="bell" style="width:18px; color:var(--dash-text-muted);"></i>
+                    <div style="position:absolute; top:-2px; right:0px; width:8px; height:8px; background:var(--dash-error); border-radius:50%; border:1px solid #000;"></div>
+                </div>
+
+                <div class="search-bar">
+                    <i data-lucide="search" style="width:14px; color:#666;"></i>
+                    <input type="text" placeholder="Search projects or codes...">
+                    <span style="font-size:10px; color:#444; border:1px solid #333; padding:2px 4px; border-radius:4px;">⌘K</span>
+                </div>
+                
+                <button class="btn-primary btn-mini" onclick="switchView('scanner')">
+                    <i data-lucide="plus" style="width:14px;"></i> New Project
+                </button>
+            </div>
+        </header>
+
+        <div class="view-container">
+            
+            <!-- === VIEW 1: DASHBOARD OVERVIEW === -->
+            <div id="view-dashboard" class="app-view active-view">
+                <div class="dashboard-title-area">
+                    <h1 class="dash-h1">Overview</h1>
+                    <p class="dash-sub">Compliance status across all active jurisdictions.</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="dash-card">
+                        <span class="stat-label">Active Scans</span>
+                        <div class="stat-value">12</div>
+                        <div style="font-size:11px; color:var(--dash-success); margin-top:4px;">+2 this week</div>
+                    </div>
+                    <div class="dash-card">
+                        <span class="stat-label">Critical Issues</span>
+                        <div class="stat-value warning">8</div>
+                        <div style="font-size:11px; color:var(--dash-text-muted); margin-top:4px;">Requires attention</div>
+                    </div>
+                    <div class="dash-card">
+                        <span class="stat-label">Pass Rate</span>
+                        <div class="stat-value success">94%</div>
+                        <div style="font-size:11px; color:var(--dash-success); margin-top:4px;">Top 5% of firms</div>
+                    </div>
+                    <div class="dash-card">
+                        <span class="stat-label">Time Saved</span>
+                        <div class="stat-value">~45h</div>
+                        <div style="font-size:11px; color:var(--dash-text-muted); margin-top:4px;">Estimated vs. manual</div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="card-header">
+                        <h3>Recent Projects</h3>
+                        <a href="#">View All Projects</a>
+                    </div>
+                    <table class="project-table">
+                        <thead>
+                            <tr><th>Project Name</th><th>Status</th><th>Date</th><th>Jurisdiction</th><th>Action</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-weight:500;">
+                                    <div style="display:flex; align-items:center; gap:10px;">
+                                        <div style="width:24px; height:24px; background:#222; border-radius:4px; display:flex; align-items:center; justify-content:center;">📄</div>
+                                        SFO_Highrise_Tower_v4
+                                    </div>
+                                </td>
+                                <td><span class="status-badge success">Passing (98%)</span></td>
+                                <td style="color:var(--dash-text-muted);">Today, 10:23 AM</td>
+                                <td style="color:#aaa;">San Francisco, CA</td>
+                                <td><a href="#" style="color:var(--dash-primary); font-size:12px;">View Report</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- === VIEW 2: CODE SCANNER === -->
+            <div id="view-scanner" class="app-view">
+                
+                <!-- STAGE 0: SETUP (NEW) -->
+                <div id="scanner-setup" class="scanner-layout">
+                    <div class="setup-card">
+                        <h2 style="font-size:20px; font-weight:700; margin-bottom:24px; color:#fff;">New Compliance Scan</h2>
+                        
+                        <div class="setup-group">
+                            <label>Project Name</label>
+                            <input type="text" class="setup-input" id="setupProjectName" placeholder="e.g. SFO_Mission_Condos_v1">
+                        </div>
+
+                        <div class="setup-group">
+                            <label>Jurisdiction (City/County)</label>
+                            <select class="setup-select" id="setupLocation">
+                                <option value="San Francisco, CA">San Francisco, CA</option>
+                                <option value="Oakland, CA">Oakland, CA</option>
+                                <option value="Los Angeles, CA">Los Angeles, CA</option>
+                                <option value="New York, NY">New York, NY</option>
+                                <option value="Austin, TX">Austin, TX</option>
+                            </select>
+                        </div>
+
+                        <div style="display:flex; gap:20px;">
+                            <div class="setup-group" style="flex:1;">
+                                <label>Construction Type</label>
+                                <select class="setup-select" id="setupType">
+                                    <option value="Residential">Residential (R-2/R-3)</option>
+                                    <option value="Commercial">Commercial (B/M)</option>
+                                    <option value="Mixed Use">Mixed Use</option>
+                                </select>
+                            </div>
+                            <div class="setup-group" style="flex:1;">
+                                <label>Building Code</label>
+                                <select class="setup-select" id="setupCode">
+                                    <option value="IBC 2021">IBC 2021 / CRC 2022</option>
+                                    <option value="IBC 2024">IBC 2024</option>
+                                    <option value="IBC 2018">IBC 2018</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button class="btn-primary" style="width:100%; justify-content:center; padding:14px; margin-top:10px;" onclick="confirmSetup()">Continue to Upload</button>
+                    </div>
+                </div>
+
+                <!-- STAGE 1: UPLOAD -->
+                <div id="scanner-upload" class="scanner-layout" style="display:none;">
+                    <div class="upload-zone-wrapper">
+                        <div class="upload-zone-inner" id="dropZone">
+                            <div class="upload-particles"></div>
+                            <div style="width:80px; height:80px; background:rgba(99,102,241,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 24px;">
+                                <i data-lucide="cloud-upload" style="width:40px; height:40px; color:var(--dash-primary);"></i>
+                            </div>
+                            <h2 class="upload-title">Upload Architectural Set</h2>
+                            <p class="upload-sub">Drag & Drop PDF, DWG, or RVT files here</p>
+                            
+                            <div style="display:flex; gap:12px; justify-content:center; margin-bottom:30px;">
+                                <span style="font-size:11px; background:#222; padding:4px 8px; border-radius:4px; color:#888; border:1px solid #333;">PDF</span>
+                                <span style="font-size:11px; background:#222; padding:4px 8px; border-radius:4px; color:#888; border:1px solid #333;">DWG</span>
+                                <span style="font-size:11px; background:#222; padding:4px 8px; border-radius:4px; color:#888; border:1px solid #333;">DXF</span>
+                            </div>
+
+                            <input type="file" id="fileInput" hidden onchange="handleFile(this.files[0])">
+                            <button class="btn-primary btn-mini" style="padding: 14px 32px; font-size: 14px; margin: 0 auto; box-shadow: 0 0 20px rgba(99,102,241,0.4);" onclick="document.getElementById('fileInput').click()">Browse Local Files</button>
+                        </div>
+                    </div>
+                    <p style="margin-top:20px; color:var(--dash-text-muted); font-size:12px; cursor:pointer;" onclick="resetToSetup()">← Back to Setup</p>
+                </div>
+
+                <!-- STAGE 2: PROCESSING -->
+                <div id="scanner-process" class="scanner-layout" style="display:none;">
+                    <div class="terminal-window" style="position:relative;">
+                        <div class="scan-line"></div>
+                        <div class="terminal-header">
+                            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                            <span class="term-title">planpass_engine_v2.4.exe — node — 80x24</span>
+                        </div>
+                        <div class="terminal-body" id="consoleOutput"></div>
+                        <div style="height:2px; background:#222; width:100%; position:relative;">
+                            <div style="height:100%; background:var(--dash-success); width:0%; transition:width 0.2s; box-shadow: 0 0 10px var(--dash-success);" id="progressBar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STAGE 3: RESULTS -->
+                <div id="scanner-results" class="results-view">
+                    
+                    <!-- Interactive Generated Blueprint -->
+                    <div class="blueprint-container">
+                        <div class="blueprint-doc">
+                            
+                            <!-- EXTERIOR WALLS (Thick) -->
+                            <div class="bp-wall" style="top:10%; left:10%; width:80%; height:4px;"></div> <!-- Top -->
+                            <div class="bp-wall" style="bottom:10%; left:10%; width:80%; height:4px;"></div> <!-- Bottom -->
+                            <div class="bp-wall" style="top:10%; left:10%; width:4px; height:80%;"></div> <!-- Left -->
+                            <div class="bp-wall" style="top:10%; right:10%; width:4px; height:80%;"></div> <!-- Right -->
+                            
+                            <!-- INTERIOR WALLS -->
+                            <div class="bp-wall" style="top:45%; left:10%; width:60%; height:3px;"></div> 
+                            <div class="bp-wall" style="top:10%; left:70%; width:3px; height:35%;"></div>
+                            <div class="bp-wall" style="bottom:10%; left:40%; width:3px; height:45%;"></div>
+
+                            <!-- DOORS -->
+                            <div class="bp-door" style="top:45%; left:60%;">
+                                <div class="bp-door-leaf" style="width:25px; height:3px; transform: rotate(-45deg);"></div>
+                                <div class="bp-door-swing" style="width:25px; height:25px; top:-25px;"></div>
+                            </div>
+                            <div class="bp-door" style="top:45%; left:20%;">
+                                <div class="bp-door-leaf" style="width:20px; height:3px; transform: rotate(45deg);"></div>
+                                <div class="bp-door-swing" style="width:20px; height:20px; top:3px;"></div>
+                            </div>
+                            <div class="bp-door" style="top:75%; left:40%;">
+                                <div class="bp-door-leaf" style="width:20px; height:3px; transform: rotate(-90deg);"></div>
+                                <div class="bp-door-swing" style="width:20px; height:20px; top:-20px; left:-20px; border-radius:0 100% 0 0; border:1px dashed white; border-bottom:none; border-left:none;"></div>
+                            </div>
+
+                            <!-- WINDOWS -->
+                            <div class="bp-window" style="top:8%; left:30%; width:40px; height:8px;"></div>
+                            <div class="bp-window" style="bottom:8%; left:60%; width:40px; height:8px;"></div>
+
+                            <!-- LABELS -->
+                            <div class="bp-label" style="top:25%; left:40%;">ROOM 104<span>Occupancy: 55</span></div>
+                            <div class="bp-label" style="top:70%; left:25%;">MASTER BED<span>12' x 14'</span></div>
+                            <div class="bp-label" style="top:25%; left:85%;">KITCHEN</div>
+                            <div class="bp-label" style="top:70%; left:70%;">LIVING / DINING</div>
+
+                            <!-- DIMENSIONS -->
+                            <div class="bp-dim" style="top:5%; left:10%; width:80%;"><span>40'-0"</span></div>
+                            <div class="bp-dim" style="top:10%; left:5%; height:80%; border-top:1px solid rgba(255,255,255,0.3); border-bottom:1px solid rgba(255,255,255,0.3); border-left:none; border-right:1px solid rgba(255,255,255,0.3);">
+                                <span style="transform: rotate(-90deg); display:block; width:40px;">32'-0"</span>
+                            </div>
+
+                            <!-- HOTSPOTS -->
+                            <div class="hotspot issue-high" style="top: 45%; left: 20%;" onclick="highlightIssue('high-1')">
+                                !
+                                <div class="hotspot-tooltip">Occupant Load Issue</div>
+                            </div>
+                            <div class="hotspot issue-med" style="top: 75%; left: 40%;" onclick="highlightIssue('med-1')">
+                                !
+                                <div class="hotspot-tooltip">Door Clearance</div>
+                            </div>
+
+                            <div style="position:absolute; bottom:5%; right:5%; font-family:'JetBrains Mono'; font-size:8px; color:rgba(255,255,255,0.4); text-align:right;">
+                                PLANPASS ENGINE V2.4<br>SHEET A-101
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-panel">
+                        <div class="score-display">
+                            <div class="score-ring">88%</div>
+                            <h3 style="color:#fff; font-size:18px; margin-bottom:4px;">Conditional Pass</h3>
+                            <p style="color:var(--dash-text-muted); font-size:12px;">Based on <span id="reportCode">IBC 2021</span> & <span id="reportLoc">SF Amendments</span></p>
+                        </div>
+                        
+                        <div style="margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+                            <span class="section-label" style="margin:0; padding:0;">Priority Issues</span>
+                            <span style="font-size:11px; color:var(--dash-primary); cursor:pointer;">Filter</span>
+                        </div>
+
+                        <div class="issue-list" style="flex:1; overflow-y:auto; padding-right:4px;">
+                            <div class="issue-card high" id="issue-card-high-1">
+                                <div class="issue-meta" style="color:var(--dash-error);">IBC 1004.5 • HIGH</div>
+                                <h4 class="issue-title">Occupant Load Exceeded</h4>
+                                <p class="issue-desc">Room 104 egress width (32") insufficient for calculated load (55 occupants).</p>
+                            </div>
+                            <div class="issue-card medium" id="issue-card-med-1">
+                                <div class="issue-meta" style="color:var(--dash-warning);">ADA 404.2.3 • MEDIUM</div>
+                                <h4 class="issue-title">Door Maneuvering Clearance</h4>
+                                <p class="issue-desc">Latch side clearance is 12" (Req: 18").</p>
+                            </div>
+                            <div class="issue-card medium">
+                                <div class="issue-meta" style="color:var(--dash-warning);">CBC 11B • MEDIUM</div>
+                                <h4 class="issue-title">Stair Handrail Extension</h4>
+                                <p class="issue-desc">Top extension appears less than 12".</p>
+                            </div>
+                        </div>
+                        <button class="btn-primary btn-mini" style="width:100%; justify-content:center; margin-top:24px; padding: 14px;" onclick="resetScanner()">Start New Scan</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- === VIEW 3: PROJECTS === -->
+            <div id="view-projects" class="app-view">
+                <div class="dashboard-title-area" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h1 class="dash-h1">Projects</h1>
+                        <p class="dash-sub">Manage your architectural sets and compliance history.</p>
+                    </div>
+                    <button class="btn-primary btn-mini" onclick="switchView('scanner')">
+                        <i data-lucide="plus" style="width:14px;"></i> Upload
+                    </button>
+                </div>
+
+                <div class="quick-tools-grid" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
+                    <div class="tool-card">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                            <div class="tool-icon">🏢</div>
+                            <i data-lucide="more-horizontal" style="width:16px; color:#666;"></i>
+                        </div>
+                        <h4>SFO_Highrise_Tower_v4</h4>
+                        <p>San Francisco • Commercial</p>
+                        <div style="margin-top:16px; display:flex; justify-content:space-between; align-items:center;">
+                            <span class="status-badge success">Passing</span>
+                            <span style="font-size:11px; color:#666;">2h ago</span>
+                        </div>
+                    </div>
+                    <div class="tool-card">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                            <div class="tool-icon">🏠</div>
+                            <i data-lucide="more-horizontal" style="width:16px; color:#666;"></i>
+                        </div>
+                        <h4>Oakland_Retail_Complex</h4>
+                        <p>Oakland • Mixed Use</p>
+                        <div style="margin-top:16px; display:flex; justify-content:space-between; align-items:center;">
+                            <span class="status-badge warning">Issues</span>
+                            <span style="font-size:11px; color:#666;">1d ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- === VIEW 4: SETTINGS === -->
+            <div id="view-settings" class="app-view">
+                <h1 class="dash-h1">Settings</h1>
+                <p class="dash-sub">Configure global compliance parameters.</p>
+                <div style="max-width:600px; margin-top:32px;">
+                    <div class="dash-card">
+                        <h3 style="color:#fff; font-size:16px; margin-bottom:20px;">General Preferences</h3>
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 0; border-bottom:1px solid var(--dash-border);">
+                            <div>
+                                <div style="color:#fff; font-size:14px;">Auto-Detect Jurisdiction</div>
+                                <div style="color:var(--dash-text-muted); font-size:12px;">Use geolocation from plan title blocks.</div>
+                            </div>
+                            <div style="width:40px; height:20px; background:var(--dash-primary); border-radius:10px; position:relative;">
+                                <div style="width:16px; height:16px; background:#fff; border-radius:50%; position:absolute; top:2px; right:2px;"></div>
+                            </div>
+                        </div>
+                        <button class="btn-primary btn-mini" style="margin-top:24px;">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Logic Script -->
+    <script src="js/dashboard.js"></script>
+    <script>
+        // Init Icons
+        lucide.createIcons();
+
+        // Helper to flash the card when clicking blueprint
+        function highlightIssue(id) {
+            const cardId = 'issue-card-' + id;
+            const card = document.getElementById(cardId);
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                card.style.background = 'rgba(255,255,255,0.1)';
+                setTimeout(() => card.style.background = '', 500);
+            }
+        }
+    </script>
+</body>
+</html>
