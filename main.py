@@ -32,17 +32,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- STATIC FILE SERVING ---
-# This serves index.html at the root URL "/"
-@app.get("/")
-async def read_index():
-    return FileResponse('index.html')
-
-# Serve other static files (CSS, JS, Images, HTML pages)
-# We mount the root directory to "/" so files like style.css are accessible at /style.css
-app.mount("/", StaticFiles(directory=".", html=True), name="static")
-
-# --- API ENDPOINTS ---
+# --- 1. API ROUTES FIRST ---
+# Define API routes before mounting static files to avoid conflicts
 
 def extract_text_from_pdf(file_content: bytes) -> str:
     try:
@@ -57,12 +48,11 @@ def extract_text_from_pdf(file_content: bytes) -> str:
 
 def local_heuristic_scan(text: str):
     """
-    Returns issues that specifically match the Dashboard Demo visualization
-    to ensure a seamless 'Perfect' presentation.
+    Returns issues that specifically match the Dashboard Demo visualization.
     """
     issues = []
     
-    # 1. High Priority - Matches the "Occupant Load" hotspot in Dashboard
+    # 1. High Priority
     issues.append({
         "type": "high", 
         "code": "IBC 1004.5", 
@@ -72,7 +62,7 @@ def local_heuristic_scan(text: str):
         "citation_url": "https://up.codes/viewer/ibc-2021/chapter/10/means-of-egress#1004.5"
     })
 
-    # 2. Medium Priority - Matches the "Door Clearance" hotspot in Dashboard
+    # 2. Medium Priority
     issues.append({
         "type": "medium", 
         "code": "ADA 404.2.3", 
@@ -82,7 +72,7 @@ def local_heuristic_scan(text: str):
         "citation_url": "https://www.ada.gov/law-and-regs/design-standards/2010-stds/#404-2-3"
     })
 
-    # 3. Medium Priority - Matches the "Stair Handrail" card in Dashboard
+    # 3. Medium Priority
     issues.append({
         "type": "medium", 
         "code": "CBC 11B-505", 
@@ -114,35 +104,36 @@ def analyze_with_gpt(text: str):
 @app.post("/api/v1/scan")
 async def scan_document(file: UploadFile = File(...)):
     print(f"Processing: {file.filename}")
-    
-    # 1. Read File
     content = await file.read()
     blueprint_text = extract_text_from_pdf(content)
     
     final_data = None
-    
-    # 2. Try Real AI (if key exists)
     if client and len(blueprint_text) > 50:
         final_data = analyze_with_gpt(blueprint_text)
 
-    # 3. Fallback to "Perfect Demo" Heuristics
     if not final_data:
         detected_issues = local_heuristic_scan(blueprint_text)
-        
         critical_error = any(i['type'] == 'high' for i in detected_issues)
         if critical_error:
-            score = 88 
-            status = "Conditional Pass"
+            score = 88; status = "Conditional Pass"
         else:
-            score = 95
-            status = "Passing"
-            
+            score = 95; status = "Passing"
         final_data = { "score": score, "status": status, "issues": detected_issues }
 
     return final_data
 
+# --- 2. SERVE HTML AT ROOT ---
+# This specific route handles the homepage
+@app.get("/")
+async def read_index():
+    return FileResponse('index.html')
+
+# --- 3. MOUNT STATIC FILES ---
+# This makes sure style.css, script.js, dashboard.html, etc. are accessible.
+# We mount it at the root "/" so that <link href="style.css"> works.
+app.mount("/", StaticFiles(directory=".", html=True), name="static")
+
 if __name__ == "__main__":
     import uvicorn
-    # Use the PORT environment variable provided by Render
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
