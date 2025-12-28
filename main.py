@@ -33,7 +33,6 @@ app.add_middleware(
 )
 
 # --- 1. API ROUTES FIRST ---
-# Define API routes before mounting static files to avoid conflicts
 
 def extract_text_from_pdf(file_content: bytes) -> str:
     try:
@@ -122,8 +121,39 @@ async def scan_document(file: UploadFile = File(...)):
 
     return final_data
 
-# --- 2. EXPLICIT HTML ROUTES ---
-# Ensure these pages are always accessible directly
+# --- 2. EXPLICIT ASSET ROUTES (CRITICAL FIX) ---
+# Explicitly serve the CSS and JS files to ensure they load.
+
+@app.get("/style.css")
+async def read_style_css():
+    return FileResponse('style.css')
+
+@app.get("/dashboard.css")
+async def read_dashboard_css():
+    return FileResponse('dashboard.css')
+
+@app.get("/signup.css")
+async def read_signup_css():
+    return FileResponse('signup.css')
+
+@app.get("/script.js")
+async def read_script_js():
+    return FileResponse('script.js')
+
+@app.get("/dashboard.js")
+async def read_dashboard_js():
+    return FileResponse('dashboard.js')
+
+@app.get("/js/dashboard.js") # Alias for paths like <script src="js/dashboard.js">
+async def read_js_dashboard_js():
+    return FileResponse('dashboard.js')
+
+@app.get("/js/script.js") # Alias for paths like <script src="js/script.js">
+async def read_js_script_js():
+    return FileResponse('script.js')
+
+
+# --- 3. EXPLICIT HTML ROUTES ---
 @app.get("/")
 async def read_index():
     return FileResponse('index.html')
@@ -146,13 +176,11 @@ async def read_signup():
 
 @app.get("/pricing.html")
 async def read_pricing():
-    # If pricing.html doesn't exist, this might error, but assuming it exists or is planned
     if os.path.exists('pricing.html'):
         return FileResponse('pricing.html')
-    return FileResponse('index.html') # Fallback
+    return FileResponse('index.html')
 
-# --- 3. MOUNT STATIC FILES ---
-# This serves all other static files (CSS, JS, Images) not explicitly handled above
+# --- 4. MOUNT STATIC FILES (FALLBACK) ---
 app.mount("/", StaticFiles(directory=".", html=True), name="static")
 
 if __name__ == "__main__":
