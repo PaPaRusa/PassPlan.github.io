@@ -122,15 +122,37 @@ async def scan_document(file: UploadFile = File(...)):
 
     return final_data
 
-# --- 2. SERVE HTML AT ROOT ---
-# This specific route handles the homepage
+# --- 2. EXPLICIT HTML ROUTES ---
+# Ensure these pages are always accessible directly
 @app.get("/")
 async def read_index():
     return FileResponse('index.html')
 
+@app.get("/dashboard")
+async def read_dashboard_alias():
+    return FileResponse('dashboard.html')
+
+@app.get("/dashboard.html")
+async def read_dashboard():
+    return FileResponse('dashboard.html')
+
+@app.get("/demo.html")
+async def read_demo():
+    return FileResponse('demo.html')
+
+@app.get("/signup.html")
+async def read_signup():
+    return FileResponse('signup.html')
+
+@app.get("/pricing.html")
+async def read_pricing():
+    # If pricing.html doesn't exist, this might error, but assuming it exists or is planned
+    if os.path.exists('pricing.html'):
+        return FileResponse('pricing.html')
+    return FileResponse('index.html') # Fallback
+
 # --- 3. MOUNT STATIC FILES ---
-# This makes sure style.css, script.js, dashboard.html, etc. are accessible.
-# We mount it at the root "/" so that <link href="style.css"> works.
+# This serves all other static files (CSS, JS, Images) not explicitly handled above
 app.mount("/", StaticFiles(directory=".", html=True), name="static")
 
 if __name__ == "__main__":
