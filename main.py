@@ -3,6 +3,8 @@ import json
 import random
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pypdf import PdfReader
 from io import BytesIO
 from dotenv import load_dotenv
@@ -21,7 +23,7 @@ if OPENAI_API_KEY:
 
 app = FastAPI(title="PlanPass AI - Real Engine")
 
-# Enable CORS for local testing
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -29,6 +31,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# --- STATIC FILE SERVING ---
+# This serves index.html at the root URL "/"
+@app.get("/")
+async def read_index():
+    return FileResponse('index.html')
+
+# Serve other static files (CSS, JS, Images, HTML pages)
+# We mount the root directory to "/" so files like style.css are accessible at /style.css
+app.mount("/", StaticFiles(directory=".", html=True), name="static")
+
+# --- API ENDPOINTS ---
 
 def extract_text_from_pdf(file_content: bytes) -> str:
     try:
@@ -43,7 +57,7 @@ def extract_text_from_pdf(file_content: bytes) -> str:
 
 def local_heuristic_scan(text: str):
     """
-    Returns issues that specificially match the Dashboard Demo visualization
+    Returns issues that specifically match the Dashboard Demo visualization
     to ensure a seamless 'Perfect' presentation.
     """
     issues = []
@@ -78,20 +92,9 @@ def local_heuristic_scan(text: str):
         "citation_url": "https://up.codes/viewer/california/ca-building-code-2022/chapter/11B/accessibility-to-public-buildings#11B-505.10.2"
     })
 
-    # Optional: Add dynamic text-based findings if text exists
-    text_lower = text.lower()
-    if "kitchen" in text_lower:
-        issues.append({
-            "type": "low", "code": "NEC 210.52(C)", "title": "Kitchen Outlet Spacing", 
-            "desc": "Verify counter spacing does not exceed 4 feet between receptacles.", 
-            "recommendation": "Check electrical plan layer.",
-            "citation_url": ""
-        })
-
     return issues
 
 def analyze_with_gpt(text: str):
-    # This remains as a fallback for the "Real" AI analysis if API key is present
     try:
         truncated_text = text[:10000] 
         prompt = f"""
@@ -108,10 +111,6 @@ def analyze_with_gpt(text: str):
     except Exception:
         return None
 
-@app.get("/")
-def read_root():
-    return {"status": "Online"}
-
 @app.post("/api/v1/scan")
 async def scan_document(file: UploadFile = File(...)):
     print(f"Processing: {file.filename}")
@@ -127,14 +126,12 @@ async def scan_document(file: UploadFile = File(...)):
         final_data = analyze_with_gpt(blueprint_text)
 
     # 3. Fallback to "Perfect Demo" Heuristics
-    # This ensures the demo ALWAYS looks good even without OpenAI
     if not final_data:
         detected_issues = local_heuristic_scan(blueprint_text)
         
-        # Calculate score based on issues
         critical_error = any(i['type'] == 'high' for i in detected_issues)
         if critical_error:
-            score = 88 # Match the hardcoded demo score
+            score = 88 
             status = "Conditional Pass"
         else:
             score = 95
@@ -146,4 +143,6 @@ async def scan_document(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # Use the PORT environment variable provided by Render
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
