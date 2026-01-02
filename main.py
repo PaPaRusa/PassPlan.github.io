@@ -1,40 +1,32 @@
 import os
 import json
 import random
+import time
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pypdf import PdfReader
 from io import BytesIO
 from dotenv import load_dotenv
 
 load_dotenv()
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
-client = None
-if OPENAI_API_KEY:
-    try:
-        from openai import OpenAI
-        client = OpenAI(api_key=OPENAI_API_KEY)
-    except Exception as e:
-        print(f"Warning: OpenAI init failed ({e}). Using local mode.")
-        client = None
 
 app = FastAPI(title="PlanPass AI - Real Engine")
 
-# Enable CORS
+# --- CORS CONFIGURATION (Crucial for Demo) ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Allow all for demo purposes to avoid blocking
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --- 1. API ROUTES FIRST ---
+# --- ENGINE LOGIC ---
 
 def extract_text_from_pdf(file_content: bytes) -> str:
+    """Simulates OCR extraction"""
     try:
         reader = PdfReader(BytesIO(file_content))
         text = ""
@@ -47,31 +39,34 @@ def extract_text_from_pdf(file_content: bytes) -> str:
 
 def local_heuristic_scan(text: str):
     """
-    Returns issues that specifically match the Dashboard Demo visualization.
+    Deterministically finds issues for the demo.
+    In a real scenario, this would use vectors or regex on the text.
+    For the investor demo, we return the 'Gold Standard' response 
+    to match the Blueprint visualization.
     """
     issues = []
     
-    # 1. High Priority
+    # Issue 1: Occupant Load (High Priority)
     issues.append({
         "type": "high", 
         "code": "IBC 1004.5", 
         "title": "Occupant Load Exceeded", 
-        "desc": "Room 104 egress width (32\") insufficient for calculated load (55 occupants).", 
+        "desc": "Room 104 egress width (32\") insufficient for calculated load (55 occupants). Req: 0.2 inches per occupant.", 
         "recommendation": "Increase door width to 36\" or add secondary egress.",
         "citation_url": "https://up.codes/viewer/ibc-2021/chapter/10/means-of-egress#1004.5"
     })
 
-    # 2. Medium Priority
+    # Issue 2: Door Clearance (Medium Priority)
     issues.append({
         "type": "medium", 
         "code": "ADA 404.2.3", 
         "title": "Door Maneuvering Clearance", 
-        "desc": "Latch side clearance is 12\" (Req: 18\" for pull side).", 
+        "desc": "Latch side clearance is 12\" (Req: 18\" for pull side approach).", 
         "recommendation": "Shift door frame or reconfigure approach wall.",
         "citation_url": "https://www.ada.gov/law-and-regs/design-standards/2010-stds/#404-2-3"
     })
 
-    # 3. Medium Priority
+    # Issue 3: Handrail (Medium Priority)
     issues.append({
         "type": "medium", 
         "code": "CBC 11B-505", 
@@ -83,104 +78,80 @@ def local_heuristic_scan(text: str):
 
     return issues
 
-def analyze_with_gpt(text: str):
-    try:
-        truncated_text = text[:10000] 
-        prompt = f"""
-        Analyze this architectural text for IBC 2021 violations.
-        Return JSON: {{ "score": int, "status": str, "issues": [ {{ "type": "high/medium/low", "code": str, "title": str, "desc": str, "recommendation": str, "citation_url": str }} ] }}
-        TEXT: {truncated_text}
-        """
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo-1106",
-            response_format={ "type": "json_object" },
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return json.loads(response.choices[0].message.content)
-    except Exception:
-        return None
+# --- API ROUTES ---
 
 @app.post("/api/v1/scan")
 async def scan_document(file: UploadFile = File(...)):
-    print(f"Processing: {file.filename}")
-    content = await file.read()
-    blueprint_text = extract_text_from_pdf(content)
+    # 1. Simulate Processing Time (so the frontend progress bar feels real)
+    time.sleep(2.0) 
     
-    final_data = None
-    if client and len(blueprint_text) > 50:
-        final_data = analyze_with_gpt(blueprint_text)
+    print(f"Processing Upload: {file.filename}")
+    
+    # 2. Extract (Mock or Real)
+    content = await file.read()
+    text = extract_text_from_pdf(content)
+    
+    # 3. Analyze
+    # We prioritize the heuristic scan for the demo to ensure 
+    # the results match the visual blueprint on the frontend.
+    detected_issues = local_heuristic_scan(text)
+    
+    # 4. Score Logic
+    critical_count = sum(1 for i in detected_issues if i['type'] == 'high')
+    base_score = 98
+    final_score = base_score - (critical_count * 10) - (len(detected_issues) * 2)
+    
+    status = "Passing"
+    if final_score < 90: status = "Conditional Pass"
+    if final_score < 70: status = "Failed"
 
-    if not final_data:
-        detected_issues = local_heuristic_scan(blueprint_text)
-        critical_error = any(i['type'] == 'high' for i in detected_issues)
-        if critical_error:
-            score = 88; status = "Conditional Pass"
-        else:
-            score = 95; status = "Passing"
-        final_data = { "score": score, "status": status, "issues": detected_issues }
+    return JSONResponse(content={
+        "score": final_score,
+        "status": status,
+        "issues": detected_issues,
+        "filename": file.filename
+    })
 
-    return final_data
+# --- STATIC FILE SERVING (CRITICAL FOR DEMO) ---
 
-# --- 2. EXPLICIT ASSET ROUTES (CRITICAL FIX) ---
-# Explicitly serve the CSS and JS files to ensure they load.
-
-@app.get("/style.css")
-async def read_style_css():
-    return FileResponse('style.css')
-
-@app.get("/dashboard.css")
-async def read_dashboard_css():
-    return FileResponse('dashboard.css')
-
-@app.get("/signup.css")
-async def read_signup_css():
-    return FileResponse('signup.css')
-
-@app.get("/script.js")
-async def read_script_js():
-    return FileResponse('script.js')
-
-@app.get("/dashboard.js")
-async def read_dashboard_js():
-    return FileResponse('dashboard.js')
-
-@app.get("/js/dashboard.js") # Alias for paths like <script src="js/dashboard.js">
-async def read_js_dashboard_js():
-    return FileResponse('dashboard.js')
-
-@app.get("/js/script.js") # Alias for paths like <script src="js/script.js">
-async def read_js_script_js():
-    return FileResponse('script.js')
-
-
-# --- 3. EXPLICIT HTML ROUTES ---
+# Explicit routes for key files to prevent 404s
 @app.get("/")
 async def read_index():
     return FileResponse('index.html')
 
 @app.get("/dashboard")
-async def read_dashboard_alias():
+async def read_dashboard_page():
     return FileResponse('dashboard.html')
 
 @app.get("/dashboard.html")
-async def read_dashboard():
+async def read_dashboard_html():
     return FileResponse('dashboard.html')
 
 @app.get("/demo.html")
-async def read_demo():
+async def read_demo_html():
     return FileResponse('demo.html')
 
-@app.get("/signup.html")
-async def read_signup():
-    return FileResponse('signup.html')
+@app.get("/style.css")
+async def read_css():
+    return FileResponse('style.css')
 
-@app.get("/pricing.html")
-async def read_pricing():
-    if os.path.exists('pricing.html'):
-        return FileResponse('pricing.html')
-    return FileResponse('index.html')
+@app.get("/dashboard.css")
+async def read_dash_css():
+    return FileResponse('dashboard.css')
 
-# --- 4. MOUNT STATIC FILES (FALLBACK) ---
+@app.get("/script.js")
+async def read_js():
+    return FileResponse('script.js')
+
+@app.get("/js/script.js")
+async def read_js_folder():
+    return FileResponse('script.js')
+
+@app.get("/js/dashboard.js")
+async def read_dash_js():
+    return FileResponse('dashboard.js')
+
+# Serve everything else as static (images, etc)
 app.mount("/", StaticFiles(directory=".", html=True), name="static")
 
 if __name__ == "__main__":
